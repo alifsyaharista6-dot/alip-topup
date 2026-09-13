@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liffyz Store - Top Up Game</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config={theme:{extend:{fontFamily:{inter:['Inter','sans-serif']},colors:{brand:'#ef4444',dark:'#0b1020',card:'#141b2d'}}}}
+  </script>
+  <style>
+    body{font-family:Inter,sans-serif;background:#0b1020;color:#fff}
+    .game-card{transition:.25s}.game-card:hover{transform:translateY(-5px);box-shadow:0 15px 35px rgba(0,0,0,.3)}
+    .selected{border-color:#ef4444!important;background:rgba(239,68,68,.12)!important}
+  </style>
+</head>
+<body class="min-h-screen">
+
+<header class="sticky top-0 z-50 bg-dark/90 backdrop-blur border-b border-slate-800">
+ <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+   <button onclick="showHome()" class="font-extrabold text-xl">Liffyz<span class="text-red-500">Store</span></button>
+   <div class="flex gap-2 items-center">
+    <button onclick="document.getElementById('search').focus()" class="p-2 text-slate-300"><i class="fa-solid fa-search"></i></button>
+    <button class="bg-red-500 px-4 py-2 rounded-lg text-xs font-bold">MASUK</button>
+   </div>
+ </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-6">
+ <section id="home">
+  <div class="rounded-2xl p-6 sm:p-10 bg-gradient-to-br from-red-600 via-rose-600 to-orange-500 relative overflow-hidden">
+   <div class="relative z-10 max-w-xl">
+    <span class="text-xs font-bold bg-black/20 px-3 py-1 rounded-full">LIFFYZ STORE</span>
+    <h1 class="text-2xl sm:text-4xl font-extrabold mt-4">Top Up Game Cepat & Mudah</h1>
+    <p class="text-sm mt-3 text-white/85">Pilih game favoritmu, masukkan ID, pilih nominal dan lanjutkan checkout demo.</p>
+    <button onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})" class="mt-5 bg-white text-slate-900 px-5 py-2.5 rounded-xl font-bold text-sm">TOP UP SEKARANG</button>
+   </div>
+   <i class="fa-solid fa-gamepad absolute -right-4 -bottom-8 text-[180px] opacity-10"></i>
+  </div>
+
+  <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-between items-center">
+   <h2 class="font-bold text-lg">Game Populer</h2>
+   <div class="relative w-full sm:w-64">
+    <i class="fa-solid fa-search absolute left-3 top-3 text-slate-500"></i>
+    <input id="search" oninput="renderGames()" placeholder="Cari game..." class="w-full bg-card border border-slate-700 rounded-xl py-2.5 pl-10 pr-3 text-sm outline-none focus:border-red-500">
+   </div>
+  </div>
+  <div id="games" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-5"></div>
+ </section>
+
+ <section id="detail" class="hidden">
+  <button onclick="showHome()" class="text-sm text-slate-400 mb-5"><i class="fa-solid fa-arrow-left mr-2"></i>Kembali</button>
+  <div class="bg-card border border-slate-800 rounded-2xl p-5 flex gap-4 items-center">
+   <div id="gameIcon" class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl"></div>
+   <div><h2 id="gameTitle" class="font-extrabold text-xl"></h2><p id="gamePublisher" class="text-xs text-slate-400"></p></div>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-5 mt-5">
+   <div class="lg:col-span-2 space-y-5">
+    <div class="bg-card border border-slate-800 rounded-2xl p-5">
+     <h3 class="font-bold"><span class="bg-red-500 rounded-full px-2 py-1 text-xs mr-2">1</span>Masukkan ID</h3>
+     <div id="inputs" class="grid sm:grid-cols-2 gap-3 mt-5"></div>
+    </div>
+    <div class="bg-card border border-slate-800 rounded-2xl p-5">
+     <h3 class="font-bold"><span class="bg-red-500 rounded-full px-2 py-1 text-xs mr-2">2</span>Pilih Nominal</h3>
+     <div id="denoms" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5"></div>
+    </div>
+    <div class="bg-card border border-slate-800 rounded-2xl p-5">
+     <h3 class="font-bold"><span class="bg-red-500 rounded-full px-2 py-1 text-xs mr-2">3</span>Metode Pembayaran</h3>
+     <div id="payments" class="grid sm:grid-cols-2 gap-3 mt-5"></div>
+    </div>
+   </div>
+
+   <aside class="bg-card border border-slate-800 rounded-2xl p-5 h-fit lg:sticky lg:top-24">
+    <h3 class="font-bold">Ringkasan Pesanan</h3>
+    <div class="mt-5 space-y-3 text-sm">
+     <div class="flex justify-between"><span class="text-slate-400">Game</span><span id="sumGame">-</span></div>
+     <div class="flex justify-between"><span class="text-slate-400">Nominal</span><span id="sumDenom">-</span></div>
+     <div class="flex justify-between"><span class="text-slate-400">Pembayaran</span><span id="sumPay">-</span></div>
+     <hr class="border-slate-700">
+     <div class="flex justify-between font-bold"><span>Total</span><span id="sumTotal" class="text-red-400">Rp0</span></div>
+    </div>
+    <button onclick="checkout()" class="w-full mt-6 bg-red-500 hover:bg-red-600 py-3 rounded-xl font-bold text-sm">LANJUTKAN CHECKOUT</button>
+    <p class="text-[10px] text-slate-500 mt-3 text-center">Website demo. Pembayaran otomatis belum terintegrasi.</p>
+   </aside>
+  </div>
+ </section>
+</main>
+
+<div id="modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur flex items-center justify-center p-4">
+ <div class="bg-card border border-slate-700 rounded-2xl max-w-sm w-full p-6 text-center">
+  <div class="w-14 h-14 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-check"></i></div>
+  <h2 class="font-bold text-lg mt-4">Checkout Demo</h2>
+  <p id="modalText" class="text-sm text-slate-400 mt-3"></p>
+  <button onclick="document.getElementById('modal').classList.add('hidden');showHome()" class="w-full bg-red-500 py-3 rounded-xl font-bold mt-5">SELESAI</button>
+ </div>
+</div>
+
+<footer class="text-center text-xs text-slate-500 py-8">© 2026 Liffyz Store • Demo Website</footer>
+
+<script>
+const games=[
+ {id:'ff',name:'Free Fire',pub:'Garena',icon:'fa-person-rifle',grad:'from-orange-500 to-red-700',inputs:['Player ID'],denoms:[['70 Diamonds',10000],['140 Diamonds',20000],['355 Diamonds',50000],['720 Diamonds',100000],['1450 Diamonds',200000],['3640 Diamonds',500000]]},
+ {id:'ml',name:'Mobile Legends',pub:'Moonton',icon:'fa-shield-halved',grad:'from-blue-500 to-indigo-800',inputs:['User ID','Zone ID'],denoms:[['86 Diamonds',20500],['172 Diamonds',41000],['257 Diamonds',61000],['514 Diamonds',122000],['1050 Diamonds',250000],['2578 Diamonds',590000]]},
+ {id:'pubg',name:'PUBG Mobile',pub:'Tencent Games',icon:'fa-plane',grad:'from-yellow-500 to-orange-700',inputs:['Character ID'],denoms:[['60 UC',15000],['300 UC',75000],['660 UC',150000],['1800 UC',380000],['3850 UC',750000]]},
+ {id:'valo',name:'Valorant',pub:'Riot Games',icon:'fa-crosshairs',grad:'from-red-500 to-rose-900',inputs:['Riot ID'],denoms:[['420 VP',50000],['700 VP',80000],['1375 VP',150000],['2400 VP',250000],['4000 VP',450000]]},
+ {id:'genshin',name:'Genshin Impact',pub:'HoYoverse',icon:'fa-wand-magic-sparkles',grad:'from-cyan-500 to-blue-800',inputs:['UID'],denoms:[['Welkin Moon',29000],['300 Crystals',79000],['980 Crystals',249000],['1980 Crystals',499000],['6480 Crystals',1599000]]},
+ {id:'roblox',name:'Roblox',pub:'Roblox Corp',icon:'fa-cube',grad:'from-slate-600 to-slate-950',inputs:['Username'],denoms:[['400 Robux',75000],['800 Robux',150000],['1700 Robux',310000],['4500 Robux',790000]]},
+ {id:'steam',name:'Steam Wallet',pub:'Valve',icon:'fa-gamepad',grad:'from-slate-700 to-blue-950',inputs:['Email'],denoms:[['Rp45.000 Wallet',50000],['Rp90.000 Wallet',98000],['Rp250.000 Wallet',265000],['Rp600.000 Wallet',630000]]},
+ {id:'hsr',name:'Honkai Star Rail',pub:'HoYoverse',icon:'fa-star',grad:'from-purple-500 to-indigo-900',inputs:['UID'],denoms:[['Supply Pass',29000],['300 Shard',79000],['980 Shard',249000],['3280 Shard',799000]]},
+ {id:'aov',name:'Arena of Valor',pub:'Garena',icon:'fa-shield',grad:'from-violet-600 to-purple-950',inputs:['Player ID'],denoms:[['40 Vouchers',10000],['90 Vouchers',20000],['450 Vouchers',100000],['1150 Vouchers',250000]]},
+ {id:'cod',name:'COD Mobile',pub:'Activision',icon:'fa-crosshairs',grad:'from-zinc-600 to-black',inputs:['UID'],denoms:[['63 CP',10000],['131 CP',20000],['333 CP',50000],['685 CP',100000],['3160 CP',450000]]}
+];
+const pays=[{id:'qris',name:'QRIS Demo',fee:0,icon:'fa-qrcode'},{id:'dana',name:'DANA',fee:1000,icon:'fa-wallet'},{id:'gopay',name:'GoPay',fee:1000,icon:'fa-mobile-screen'},{id:'shopee',name:'ShopeePay',fee:1000,icon:'fa-bag-shopping'},{id:'seabank',name:'SeaBank',fee:2000,icon:'fa-building-columns'}];
+let game=null,denom=null,pay=null;
+
+const rupiah=n=>'Rp'+n.toLocaleString('id-ID');
+
+function renderGames(){
+ const q=document.getElementById('search').value.toLowerCase();
+ document.getElementById('games').innerHTML=games.filter(g=>g.name.toLowerCase().includes(q)).map(g=>`
+ <button onclick="openGame('${g.id}')" class="game-card text-left bg-card border border-slate-800 rounded-2xl p-4">
+  <div class="w-full aspect-square rounded-xl bg-gradient-to-br ${g.grad} flex items-center justify-center text-4xl mb-3"><i class="fa-solid ${g.icon}"></i></div>
+  <div class="font-bold text-sm truncate">${g.name}</div><div class="text-[11px] text-slate-400 mt-1">${g.pub}</div>
+ </button>`).join('');
+}
+
+function openGame(id){
+ game=games.find(x=>x.id===id);denom=null;pay=null;
+ document.getElementById('gameIcon').className=`w-16 h-16 rounded-2xl bg-gradient-to-br ${game.grad} flex items-center justify-center text-2xl`;
+ document.getElementById('gameIcon').innerHTML=`<i class="fa-solid ${game.icon}"></i>`;
+ document.getElementById('gameTitle').textContent=game.name;
+ document.getElementById('gamePublisher').textContent=game.pub;
+ document.getElementById('inputs').innerHTML=game.inputs.map((x,i)=>`<div><label class="text-xs text-slate-400">${x}</label><input id="input${i}" class="mt-2 w-full bg-slate-950 border border-slate-700 focus:border-red-500 outline-none rounded-xl p-3 text-sm" placeholder="Masukkan ${x}"></div>`).join('');
+ document.getElementById('denoms').innerHTML=game.denoms.map((d,i)=>`<button onclick="selectDenom(${i})" id="d${i}" class="choice bg-slate-950 border border-slate-700 hover:border-red-500 text-left p-3 rounded-xl"><div class="text-xs font-bold">${d[0]}</div><div class="text-xs text-red-400 mt-2">${rupiah(d[1])}</div></button>`).join('');
+ document.getElementById('payments').innerHTML=pays.map((p,i)=>`<button onclick="selectPay('${p.id}')" id="p${p.id}" class="choice bg-slate-950 border border-slate-700 hover:border-red-500 flex items-center gap-3 text-left p-3 rounded-xl"><i class="fa-solid ${p.icon} text-red-400"></i><div><div class="text-xs font-bold">${p.name}</div><div class="text-[10px] text-slate-500">Biaya ${rupiah(p.fee)}</div></div></button>`).join('');
+ document.getElementById('home').classList.add('hidden');document.getElementById('detail').classList.remove('hidden');update();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function selectDenom(i){denom=game.denoms[i];document.querySelectorAll('#denoms .choice').forEach(x=>x.classList.remove('selected'));document.getElementById('d'+i).classList.add('selected');update()}
+function selectPay(id){pay=pays.find(x=>x.id===id);document.querySelectorAll('#payments .choice').forEach(x=>x.classList.remove('selected'));document.getElementById('p'+id).classList.add('selected');update()}
+function update(){
+ document.getElementById('sumGame').textContent=game?game.name:'-';
+ document.getElementById('sumDenom').textContent=denom?denom[0]:'-';
+ document.getElementById('sumPay').textContent=pay?pay.name:'-';
+ document.getElementById('sumTotal').textContent=denom?rupiah(denom[1]+(pay?pay.fee:0)):'Rp0';
+}
+function checkout(){
+ if(!game||!denom||!pay)return alert('Silakan pilih nominal dan metode pembayaran terlebih dahulu.');
+ const input=document.getElementById('input0').value.trim();if(!input)return alert('Silakan masukkan ID akun.');
+ document.getElementById('modalText').textContent=`Pesanan ${denom[0]} untuk ${game.name} dengan metode ${pay.name} berhasil dibuat dalam mode demo.`;
+ document.getElementById('modal').classList.remove('hidden');
+}
+function showHome(){document.getElementById('detail').classList.add('hidden');document.getElementById('home').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}
+renderGames();
+</script>
+</body>
+</html>
